@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Avriel Clothingline</title>
+  <meta name="description" content="Avriel Clothingline — curated womenswear. Order via WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f5f1; --surface: #ffffff; --ink: #26231f; --muted: #8b857b;
+      --accent: #7d6a4f; --accent-dark: #5f5040; --line: #e8e3da;
+      --shadow: 0 8px 30px rgba(50, 42, 30, .08); --shadow-lg: 0 18px 50px rgba(50, 42, 30, .14);
+      --radius: 14px; --serif: "Cormorant Garamond", Georgia, serif;
+      --sans: "Inter", "Noto Sans TC", -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.6; }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 22px; }
+
+    header { position: sticky; top: 0; z-index: 50; background: rgba(247,245,241,.88);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .head-in { display: flex; align-items: center; height: 68px; gap: 16px; }
+    .logo { font-family: var(--serif); font-size: 30px; font-weight: 600; letter-spacing: 3px; margin-right: auto; }
+    .logo small { display: block; font-family: var(--sans); font-size: 9px; letter-spacing: 5px;
+      color: var(--muted); margin-top: -6px; text-transform: uppercase; }
+    #lang { font-size: 13px; font-weight: 600; border: 1.5px solid var(--line); padding: 7px 14px;
+      border-radius: 999px; color: var(--ink); }
+    #lang:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero { text-align: center; padding: 52px 22px 8px; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(30px, 5vw, 44px); font-weight: 600; letter-spacing: 1px; }
+    .hero p { color: var(--muted); margin-top: 8px; font-size: 15px; }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0 34px; }
+    .chip { padding: 8px 20px; border-radius: 999px; border: 1.5px solid var(--line);
+      background: var(--surface); font-size: 14px; color: var(--ink); transition: all .2s; }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; padding-bottom: 70px; }
+    .card { background: var(--surface); border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); transition: transform .25s, box-shadow .25s; cursor: pointer; }
+    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .card-media { position: relative; aspect-ratio: 3/4; overflow: hidden; background: #efe9e1; }
+    .card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .card:hover .card-media img { transform: scale(1.06); }
+    .badge { position: absolute; top: 12px; left: 12px; background: var(--ink); color: #fff;
+      font-size: 11px; font-weight: 600; letter-spacing: 1px; padding: 5px 11px; border-radius: 999px; }
+    .card-body { padding: 14px 16px 18px; }
+    .card-cat { font-size: 11.5px; color: var(--muted); letter-spacing: 1px; }
+    .card-name { font-size: 15.5px; font-weight: 600; margin-top: 3px; }
+
+    /* detail overlay */
+    .ovl { position: fixed; inset: 0; z-index: 100; background: rgba(30,26,20,.55); display: none;
+      align-items: center; justify-content: center; padding: 20px; }
+    .ovl.open { display: flex; }
+    .sheet { background: var(--surface); border-radius: 18px; max-width: 860px; width: 100%;
+      max-height: 92vh; overflow-y: auto; box-shadow: var(--shadow-lg); position: relative; }
+    .sheet-in { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; padding: 26px; }
+    .close { position: absolute; top: 12px; right: 14px; font-size: 26px; color: var(--muted); z-index: 2;
+      width: 40px; height: 40px; border-radius: 50%; background: var(--surface); box-shadow: var(--shadow); }
+    .d-media img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 12px; background: #efe9e1; }
+    .thumbs { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .thumb { width: 54px; height: 68px; border-radius: 8px; overflow: hidden;
+      border: 2px solid var(--line); padding: 0; background: #efe9e1; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb.active { border-color: var(--accent); }
+    .d-info h2 { font-family: var(--serif); font-size: 27px; font-weight: 600; margin-bottom: 8px; }
+    .d-desc { color: #5c554b; font-size: 14.5px; margin: 10px 0 16px; }
+    .d-label { font-size: 13px; font-weight: 700; margin: 12px 0 6px; }
+    .tag { display: inline-block; padding: 6px 14px; border: 1.5px solid var(--line);
+      border-radius: 8px; font-size: 13.5px; margin: 0 6px 6px 0; background: var(--surface); }
+    .m-table { border-collapse: collapse; font-size: 13px; margin-top: 4px; width: 100%; }
+    .m-table th, .m-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: center; }
+    .m-table th { background: #f3eee7; font-weight: 600; }
+    .m-note { font-size: 11.5px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+    .wa-btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
+      margin-top: 18px; padding: 15px; border-radius: 999px; background: #25d366; color: #fff;
+      font-size: 16px; font-weight: 700; text-decoration: none; transition: background .15s; }
+    .wa-btn:hover { background: #1da851; }
+    .wa-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    footer { border-top: 1px solid var(--line); padding: 34px 22px 44px; text-align: center;
+      color: var(--muted); font-size: 13px; }
+    footer .logo { font-size: 24px; margin-bottom: 6px; color: var(--ink); }
+    footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+    .loading { text-align: center; padding: 80px 0; color: var(--muted); }
+    @media (max-width: 980px) { .grid { grid-template-columns: repeat(3, 1fr); } .sheet-in { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap head-in">
+      <div class="logo">Avriel<small data-t="tagline">Clothingline</small></div>
+      <button id="lang" type="button">EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 data-t="hero"></h1>
+    <p data-t="herosub"></p>
+  </section>
+
+  <div class="wrap">
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"><div class="loading" data-t="loading"></div></div>
+  </div>
+
+  <div class="ovl" id="ovl">
+    <div class="sheet">
+      <button class="close" id="close" type="button">×</button>
+      <div class="sheet-in" id="sheet"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="logo">Avriel</div>
+    <p data-t="foot"></p>
+    <p style="margin-top:6px"><a id="foot-wa" href="#" target="_blank" rel="noopener">WhatsApp +852 5997 3023</a></p>
+  </footer>
+
+  <!-- live catalogue data (auto-syncs with the master store) -->
+  <script src="https://aurelife.netlify.app/js/products.js"></script>
+  <script>
+    const WA = "85259973023";
+    const IMG_BASE = "https://aurelife.netlify.app/";
+    const LKEY = "mvea_lang";
+    const T = {
+      zh: { tagline: "Clothingline", hero: "本季精選", herosub: "喜歡哪件？WhatsApp 我們詢問訂購", loading: "載入中…",
+            all: "全部", colors: "顏色", sizes: "尺寸", chart: "尺寸參考（cm）", size: "尺碼",
+            ask: "WhatsApp 詢問這件", foot: "所有商品經 WhatsApp 訂購・香港交收", lang: "EN",
+            waMsg: (n) => `你好！我喺 Avriel 睇中呢件：${n}，想問下詳情同價錢 😊`,
+            waGeneral: "你好！我想問 Avriel 嘅商品 😊" },
+      en: { tagline: "Clothingline", hero: "This Season's Picks", herosub: "See something you love? Ask us on WhatsApp", loading: "Loading…",
+            all: "All", colors: "Colours", sizes: "Sizes", chart: "Size guide (cm)", size: "Size",
+            ask: "Ask on WhatsApp", foot: "All orders via WhatsApp · Hong Kong delivery", lang: "中文",
+            waMsg: (n) => `Hi! I saw this at Avriel: ${n} — could you tell me more and the price? 😊`,
+            waGeneral: "Hi! I'd like to ask about Avriel items 😊" },
+    };
+    const getLang = () => (localStorage.getItem(LKEY) === "en" ? "en" : "zh");
+    const t = (k) => T[getLang()][k];
+    const L = (f) => (f == null ? "" : typeof f === "string" ? f : (f[getLang()] ?? f.en ?? ""));
+    const img = (p) => (p && p.startsWith("http") ? p : IMG_BASE + p);
+    const sizeLabel = (c) => { const m = window.SIZE_LABEL && window.SIZE_LABEL[c]; return m ? L(m) : c; };
+    const wa = (text) => `https://wa.me/${WA}?text=${encodeURIComponent(text)}`;
+
+    let active = "all";
+    let openId = null;
+    const grid = document.getElementById("grid");
+    const filters = document.getElementById("filters");
+
+    function catMap() { const m = {}; (window.CATEGORIES || []).forEach((c) => (m[c.key] = L(c.label))); return m; }
+
+    function buildFilters() {
+      const cats = window.CATEGORIES || [];
+      const present = new Set((window.PRODUCTS || []).map((p) => p.category));
+      filters.innerHTML = cats
+        .filter((c) => c.key === "all" || present.has(c.key))
+        .map((c) => `<button class="chip ${c.key === active ? "active" : ""}" data-cat="${c.key}" type="button">${L(c.label)}</button>`)
+        .join("");
+    }
+
+    function render() {
+      document.documentElement.lang = getLang() === "zh" ? "zh-Hant" : "en";
+      document.querySelectorAll("[data-t]").forEach((el) => (el.textContent = t(el.dataset.t)));
+      document.getElementById("lang").textContent = t("lang");
+      document.getElementById("foot-wa").href = wa(T[getLang()].waGeneral);
+      buildFilters();
+      const cm = catMap();
+      const list = (window.PRODUCTS || []).filter((p) => active === "all" || p.category === active);
+      grid.innerHTML = list.map((p) => `
+        <div class="card" data-id="${p.id}">
+          <div class="card-media">
+            <img src="${img(p.image)}" alt="${L(p.name)}" loading="lazy">
+            ${p.badge ? `<span class="badge">${L(p.badge)}</span>` : ""}
+          </div>
+          <div class="card-body">
+            <span class="card-cat">${cm[p.category] || ""}</span>
+            <div class="card-name">${L(p.name)}</div>
+          </div>
+        </div>`).join("") || `<div class="loading">—</div>`;
+      grid.querySelectorAll(".card").forEach((c) => c.addEventListener("click", () => openDetail(c.dataset.id)));
+      if (openId) openDetail(openId);
+    }
+
+    function openDetail(id) {
+      const p = (window.PRODUCTS || []).find((x) => x.id === id);
+      if (!p) return;
+      openId = id;
+      const gallery = p.images && p.images.length ? p.images : [p.image];
+      let chart = "";
+      if (p.measurements && p.measurements.cols && p.measurements.rows) {
+        const m = p.measurements;
+        chart = `<div class="d-label">${t("chart")}</div>
+          <div style="overflow-x:auto"><table class="m-table">
+            <tr><th>${t("size")}</th>${m.cols.map((c) => `<th>${L(c)}</th>`).join("")}</tr>
+            ${Object.entries(m.rows).map(([s, v]) => `<tr><td>${sizeLabel(s)}</td>${v.map((x) => `<td>${x}</td>`).join("")}</tr>`).join("")}
+          </table></div>
+          ${m.note ? `<p class="m-note">${L(m.note)}</p>` : ""}`;
+      }
+      document.getElementById("sheet").innerHTML = `
+        <div class="d-media">
+          <img id="d-img" src="${img(gallery[0])}" alt="${L(p.name)}">
+          ${gallery.length > 1 ? `<div class="thumbs">${gallery.map((g, i) =>
+            `<button class="thumb ${i === 0 ? "active" : ""}" data-src="${img(g)}" type="button"><img src="${img(g)}" alt=""></button>`).join("")}</div>` : ""}
+        </div>
+        <div class="d-info">
+          <h2>${L(p.name)}</h2>
+          <p class="d-desc">${L(p.description) || ""}</p>
+          <div class="d-label">${t("colors")}</div>
+          <div>${(p.colors || []).map((c) => `<span class="tag">${L(c)}</span>`).join("")}</div>
+          <div class="d-label">${t("sizes")}</div>
+          <div>${(p.sizes || []).map((s) => `<span class="tag">${sizeLabel(s)}</span>`).join("")}</div>
+          ${chart}
+          <a class="wa-btn" href="${wa(T[getLang()].waMsg(L(p.name)))}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            ${t("ask")}
+          </a>
+        </div>`;
+      document.getElementById("ovl").classList.add("open");
+      document.querySelectorAll(".thumb").forEach((th) => th.addEventListener("click", () => {
+        document.getElementById("d-img").src = th.dataset.src;
+        document.querySelectorAll(".thumb").forEach((x) => x.classList.remove("active"));
+        th.classList.add("active");
+      }));
+    }
+
+    document.getElementById("close").onclick = () => { openId = null; document.getElementById("ovl").classList.remove("open"); };
+    document.getElementById("ovl").addEventListener("click", (e) => { if (e.target.id === "ovl") { openId = null; e.target.classList.remove("open"); } });
+    document.getElementById("lang").onclick = () => { localStorage.setItem(LKEY, getLang() === "zh" ? "en" : "zh"); render(); };
+    filters.addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; active = b.dataset.cat; render(); });
+
+    render();
+  </script>
+</body>
+</html>
