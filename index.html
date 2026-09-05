@@ -66,6 +66,8 @@
     .card-body { padding: 14px 16px 18px; }
     .card-cat { font-size: 11.5px; color: var(--muted); letter-spacing: 1px; }
     .card-name { font-size: 15.5px; font-weight: 600; margin-top: 3px; }
+    .card-price { font-size: 14.5px; font-weight: 700; color: var(--accent-dark); margin-top: 2px; }
+    .d-price { font-size: 23px; font-weight: 700; color: var(--accent-dark); margin: 2px 0 4px; }
 
     /* detail overlay */
     .ovl { position: fixed; inset: 0; z-index: 100; background: rgba(30,26,20,.55); display: none;
@@ -159,12 +161,12 @@
       zh: { tagline: "Clothingline", hero: "本季精選", herosub: "喜歡哪件？WhatsApp 我們詢問訂購", loading: "載入中…",
             all: "全部", colors: "顏色", sizes: "尺寸", chart: "尺寸參考（cm）", size: "尺碼",
             ask: "WhatsApp 詢問這件", foot: "所有商品經 WhatsApp 訂購・香港交收", lang: "EN", qty: "數量",
-            waMsg: (n, o) => `你好！我喺 Avriel 睇中呢件：${n}${o.color ? `\n顏色：${o.color}` : ""}${o.size ? `\n尺碼：${o.size}` : ""}\n數量：${o.qty}\n${o.link}\n想問下詳情同價錢 😊`,
+            waMsg: (n, o) => `你好！我喺 Avriel 睇中呢件：${n}${o.color ? `\n顏色：${o.color}` : ""}${o.size ? `\n尺碼：${o.size}` : ""}\n數量：${o.qty}｜合計：HK$ ${o.total}\n${o.link}\n想訂購，唔該晒 😊`,
             waGeneral: "你好！我想問 Avriel 嘅商品 😊" },
       en: { tagline: "Clothingline", hero: "This Season's Picks", herosub: "See something you love? Ask us on WhatsApp", loading: "Loading…",
             all: "All", colors: "Colours", sizes: "Sizes", chart: "Size guide (cm)", size: "Size",
             ask: "Ask on WhatsApp", foot: "All orders via WhatsApp · Hong Kong delivery", lang: "中文", qty: "Qty",
-            waMsg: (n, o) => `Hi! I saw this at Avriel: ${n}${o.color ? `\nColour: ${o.color}` : ""}${o.size ? `\nSize: ${o.size}` : ""}\nQty: ${o.qty}\n${o.link}\nCould you tell me more and the price? 😊`,
+            waMsg: (n, o) => `Hi! I'd like to order from Avriel: ${n}${o.color ? `\nColour: ${o.color}` : ""}${o.size ? `\nSize: ${o.size}` : ""}\nQty: ${o.qty} | Total: HK$ ${o.total}\n${o.link}\nThank you! 😊`,
             waGeneral: "Hi! I'd like to ask about Avriel items 😊" },
     };
     const getLang = () => (localStorage.getItem(LKEY) === "en" ? "en" : "zh");
@@ -207,6 +209,7 @@
           <div class="card-body">
             <span class="card-cat">${cm[p.category] || ""}</span>
             <div class="card-name">${L(p.name)}</div>
+            <div class="card-price">HK$ ${p.price}</div>
           </div>
         </div>`).join("") || `<div class="loading">—</div>`;
       grid.querySelectorAll(".card").forEach((c) => c.addEventListener("click", () => openDetail(c.dataset.id)));
@@ -236,6 +239,7 @@
         </div>
         <div class="d-info">
           <h2>${L(p.name)}</h2>
+          <div class="d-price">HK$ ${p.price}</div>
           <p class="d-desc">${L(p.description) || ""}</p>
           <div class="d-label">${t("colors")}</div>
           <div>${(p.colors || []).map((c, i) => `<span class="tag pick c-tag ${i === 0 ? "active" : ""}" data-i="${i}">${L(c)}</span>`).join("")}</div>
@@ -263,7 +267,7 @@
         document.getElementById("wa-btn").href = wa(T[getLang()].waMsg(L(p.name), {
           color: selColor >= 0 ? L(p.colors[selColor]) : "",
           size: selSize >= 0 ? sizeLabel(p.sizes[selSize]) : "",
-          qty, link,
+          qty, link, total: p.price * qty,
         }));
       };
       sheet.querySelectorAll(".c-tag").forEach((el) => el.addEventListener("click", () => {
